@@ -243,11 +243,9 @@ func (c *rpcConnection) handleIncoming(ctx context.Context, envelope jsonrpcEnve
 			params = *envelope.Params
 		}
 		c.broadcast.incomingNotification(envelope.Method, params)
-		go func() {
-			if err := c.handler.handleNotification(ctx, envelope.Method, params); err.Code != 0 && err.Message != "" {
-				// notifications do not send response; log could be added
-			}
-		}()
+		if err := c.handler.handleNotification(ctx, envelope.Method, params); err.Code != 0 && err.Message != "" {
+			// notifications do not send response; log could be added
+		}
 	default:
 		// ignore invalid message
 	}
